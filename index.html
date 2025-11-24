@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoolMetal Sphere AI - Bot</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f4f4f4;
+        margin: 0;
+        padding: 0;
+    }
+    #chat {
+        width: 100%;
+        max-width: 450px;
+        margin: auto;
+        margin-top: 30px;
+        background: white;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0px 0px 15px rgba(0,0,0,0.15);
+    }
+    .msg {
+        padding: 12px;
+        margin: 10px 0;
+        border-radius: 10px;
+    }
+    .bot {
+        background: #e3f1ff;
+        text-align: left;
+    }
+    .user {
+        background: #d2ffd3;
+        text-align: right;
+    }
+    button {
+        background: #0078ff;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 10px;
+        margin-top: 10px;
+        cursor: pointer;
+        font-size: 14px;
+        width: 100%;
+    }
+    button:hover { background: #005fcc; }
+    input {
+        width: 95%;
+        padding: 10px;
+        margin-top: 15px;
+        border-radius: 10px;
+        border: 1px solid #aaa;
+    }
+</style>
+</head>
+<body>
+
+<div id="chat">
+    <div id="messages"></div>
+    <input id="userInput" placeholder="Escribe aquí..." onkeydown="if(event.key==='Enter') sendMessage()">
+    <button onclick="sendMessage()">Enviar</button>
+</div>
+
+<script>
+let step = 0;
+let userData = {
+    nombre: "",
+    telefono: "",
+    envio: "",
+    producto: "CoolMetal Sphere – Bola Metálica de Enfriamiento Instantáneo"
+};
+
+function botMessage(text) {
+    document.getElementById("messages").innerHTML += `<div class='msg bot'>${text}</div>`;
+    window.scrollTo(0, document.body.scrollHeight);
+}
+
+function userMessage(text) {
+    document.getElementById("messages").innerHTML += `<div class='msg user'>${text}</div>`;
+}
+
+function sendMessage() {
+    let input = document.getElementById("userInput").value.trim();
+    if (input === "") return;
+
+    userMessage(input);
+    document.getElementById("userInput").value = "";
+    setTimeout(() => processStep(input), 500);
+}
+
+// Conversación del bot
+function processStep(input) {
+
+    if (step === 0) {
+        botMessage(`
+            👋 ¡Bienvenido a <b>CoolMetal Sphere AI</b>!  
+            La experiencia inteligente para comprar la bola metálica que enfría tu bebida en solo 15 segundos ❄️  
+            <br><br>
+            ¿Qué deseas ver hoy?
+            <br><br>
+            1️⃣ Ver precios  
+            2️⃣ Promociones  
+            3️⃣ ¿Qué es y cómo funciona?  
+            4️⃣ Realizar un pedido  
+            5️⃣ Testimonios reales 
+        `);
+        step = 1;
+        return;
+    }
+
+    if (step === 1) {
+        switch (input) {
+
+            case "1":
+                botMessage(`
+                    💸 <b>PRECIO OFICIAL</b><br>
+                    • 1 CoolMetal Sphere → <b>$9.99</b><br>
+                    • 2 unidades → <b>$17.99</b><br>
+                    • Pack familiar (4) → <b>$32.00</b><br>
+                    <br>
+                    ¿Quieres ver ahora promociones o hacer un pedido?  
+                    Escribe:  
+                    2️⃣ Promociones  
+                    4️⃣ Pedir ahora  
+                `);
+                break;
+
+            case "2":
+                botMessage(`
+                    🎁 <b>PROMOCIONES DISPONIBLES</b><br><br>
+
+                    ⭐ <u>Promociones regulares</u><br>
+                    ✔ 10% de descuento en tu segunda unidad  
+                    ✔ 15% OFF en compras mayores a $25  
+                    ✔ Envío reducido a $1.50 dentro de Quito  
+
+                    <br>
+
+                    🔥 <u>Promociones especiales Black Friday</u> (28–30 noviembre)<br>
+                    ✔ 30% de DESCUENTO directo en cualquier compra  
+                    ✔ Envío GRATIS desde 2 unidades  
+                    ✔ Estuche térmico de regalo por compras mayores a 3 piezas  
+                    ✔ Combo PRO (4 esferas + funda premium) por solo <b>$28</b>  
+
+                    <br>
+                    ¿Deseas aprovechar una promoción y hacer un pedido? Escribe: 4
+                `);
+                break;
+
+            case "3":
+                botMessage(`
+                    ⚙️ <b>¿Qué es la CoolMetal Sphere?</b><br><br>
+                    • Bola de acero grado alimenticio ultra congelable.<br>
+                    • Enfría bebidas 5x más rápido que el hielo.<br>
+                    • No se derrite, no cambia sabor, no deja restos.<br>
+                    • Perfecta para café caliente, té, bebidas frías y shots.<br>
+                    <br>
+                    ¿Quieres pedir una? Escribe: 4
+                `);
+                break;
+
+            case "4":
+                botMessage("Perfecto, empecemos tu pedido. ¿Cuál es tu nombre?");
+                step = 2;
+                break;
+
+            case "5":
+                botMessage(`
+                    ⭐ <b>TESTIMONIOS REALES DE CLIENTES</b>
+                    <br><br>
+                    🗣 <b>María F. – Quito</b><br>
+                    “Mi café se enfriaba muy lento. Esto es una maravilla, funciona rapidísimo.” 
+                    <br><br>
+                    🗣 <b>Andrés V. – Guayaquil</b><br>
+                    “La uso para mis bebidas energéticas, enfría demasiado rápido.” 
+                    <br><br>
+                    🗣 <b>Carolina M. – Cuenca</b><br>
+                    “Compré 4 para mi familia, todos fascinados. No deja sabor metálico.” 
+                    <br><br>
+                    ¿Deseas ver precios o hacer un pedido?<br>
+                    Escribe: 1 o 4
+                `);
+                break;
+
+            default:
+                botMessage("Opción no válida. Escribe 1, 2, 3, 4 o 5.");
+        }
+        return;
+    }
+
+    if (step === 2) {
+        userData.nombre = input;
+        botMessage(`Mucho gusto, <b>${input}</b> 😄<br><br>Ahora ingresa tu número de teléfono (WhatsApp):`);
+        step = 3;
+        return;
+    }
+
+    if (step === 3) {
+        userData.telefono = input;
+        botMessage(`
+            Perfecto. ¿Deseas recibir tu pedido por envío a domicilio?  
+            Escribe:  
+            ✔ Sí, quiero envío  
+            ✔ No, recogeré en punto de entrega
+        `);
+        step = 4;
+        return;
+    }
+
+    if (step === 4) {
+        userData.envio = input.toLowerCase().includes("sí") || input.toLowerCase().includes("si") 
+            ? "Con envío" 
+            : "Sin envío";
+
+        botMessage(`
+            ✅ <b>RESUMEN DE TU PEDIDO</b><br>
+            Cliente: ${userData.nombre}<br>
+            Teléfono: ${userData.telefono}<br>
+            Envío: ${userData.envio}<br>
+            Producto: ${userData.producto}<br><br>
+            Confirmar pedido (sí/no):
+        `);
+        step = 5;
+        return;
+    }
+
+    if (step === 5) {
+        if (input.toLowerCase() === "sí" || input.toLowerCase() === "si") {
+            botMessage(`
+                🎉 <b>¡Pedido confirmado!</b><br><br>
+                Nuestro equipo te escribirá por WhatsApp en los próximos minutos.  
+                Gracias por confiar en CoolMetal Sphere ❄🔥  
+            `);
+        } else {
+            botMessage("Pedido cancelado. Si deseas volver a empezar, recarga la página.");
+        }
+        step = 99;
+        return;
+    }
+}
+</script>
+
+</body>
+</html>
