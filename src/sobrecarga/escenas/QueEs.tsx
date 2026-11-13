@@ -9,15 +9,18 @@ import { Chispas, Destello, useGolpe, useSacudida } from "../componentes/efectos
 const ANCHO_BARRA = 820;
 const INICIO = 34;
 const PASO = 16;
+/** Frames en que sube cada escalón de la barra y en que queda llena. */
+export const PASOS_BARRA = Array.from({ length: QUE_ES.pasosBarra }, (_, i) => INICIO + i * PASO);
+export const FRAME_LLENO = PASOS_BARRA[PASOS_BARRA.length - 1] + 14;
 
 /** Escena 2 (3-8 s): definición + barra de energía que se carga por escalones. */
 export const QueEs: React.FC<{ duracion: number }> = ({ duracion }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const pasos = Array.from({ length: QUE_ES.pasosBarra }, (_, i) => INICIO + i * PASO);
+  const pasos = PASOS_BARRA;
   const relleno =
     pasos.reduce((acc, p) => acc + spring({ frame: frame - p, fps, config: { damping: 15 } }), 0) / pasos.length;
-  const lleno = pasos[pasos.length - 1] + 14;
+  const lleno = FRAME_LLENO;
   const sacudida = useSacudida([lleno], 16);
   const golpePct = useGolpe(pasos, 1.25);
   const etiqueta = frame >= lleno ? QUE_ES.etiquetaBarraLlena : QUE_ES.etiquetaBarra;

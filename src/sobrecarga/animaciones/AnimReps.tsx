@@ -3,8 +3,8 @@ import { interpolate, useCurrentFrame } from "remotion";
 import { COLORES, TEXTO_MIN } from "../config";
 import { Chispas, useGolpe } from "../componentes/efectos";
 
-const PRIMER_CAMBIO = 40;
-const CADA = 20;
+export const PRIMER_CAMBIO = 40;
+export const CADA = 20;
 const R = 150;
 const CIRC = 2 * Math.PI * R;
 

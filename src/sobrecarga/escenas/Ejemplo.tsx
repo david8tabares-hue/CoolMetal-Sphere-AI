@@ -13,9 +13,9 @@ const HUECO = 36;
 const ALTO_ETIQUETA = 84;
 const ALTO_SEMANA = 80;
 const HUECO_COLUMNA = 10;
-const SELLO = 20;
+export const SELLO = 20;
 const INICIO_BARRAS = 26;
-const INICIO_LINEA = 90;
+export const INICIO_LINEA = 90;
 
 /** Escena 4 (26-32 s): ejemplo ilustrativo semana a semana (números de EJEMPLO). */
 export const Ejemplo: React.FC<{ duracion: number }> = ({ duracion }) => {

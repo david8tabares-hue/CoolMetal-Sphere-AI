@@ -10,16 +10,16 @@ const DISCOS = [
   { alto: 205, ancho: 44, cae: 52 },
   { alto: 160, ancho: 38, cae: 92 },
 ];
-const IMPACTOS = DISCOS.slice(1).map((d) => d.cae + 6);
+export const IMPACTOS_PESO = DISCOS.slice(1).map((d) => d.cae + 6);
 
 /** Barra con discos que caen con impacto: "más peso". */
 export const AnimPeso: React.FC<{ incremento: number }> = ({ incremento }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const sacudida = useSacudida(IMPACTOS, 18);
-  const golpe = useGolpe(IMPACTOS, 1.35);
+  const sacudida = useSacudida(IMPACTOS_PESO, 18);
+  const golpe = useGolpe(IMPACTOS_PESO, 1.35);
   const extra = DISCOS.slice(1).filter((d) => frame >= d.cae + 6).length;
-  const etiqueta = spring({ frame: frame - IMPACTOS[0], fps, config: { damping: 10 } });
+  const etiqueta = spring({ frame: frame - IMPACTOS_PESO[0], fps, config: { damping: 10 } });
 
   const lado = (dir: 1 | -1) => (
     <div style={{ display: "flex", flexDirection: dir === 1 ? "row" : "row-reverse", alignItems: "center", gap: 6 }}>
@@ -67,7 +67,7 @@ export const AnimPeso: React.FC<{ incremento: number }> = ({ incremento }) => {
           +{formatear(extra * incremento)} kg
         </div>
       ) : null}
-      {IMPACTOS.map((f, i) => (
+      {IMPACTOS_PESO.map((f, i) => (
         <React.Fragment key={f}>
           <Chispas en={f} x={110} y={260} semilla={`pi${i}`} cantidad={14} />
           <Chispas en={f} x={730} y={260} semilla={`pd${i}`} cantidad={14} />

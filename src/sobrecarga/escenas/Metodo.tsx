@@ -9,14 +9,14 @@ import { AnimPeso } from "../animaciones/AnimPeso";
 import { AnimReps } from "../animaciones/AnimReps";
 import { AnimTecnica } from "../animaciones/AnimTecnica";
 
-const IMPACTO = 8;
+export const IMPACTO_METODO = 8;
 
 /** Escena 3 (8-26 s): una de las 3 formas de aplicar la sobrecarga progresiva. */
 export const Metodo: React.FC<{ duracion: number; indice: 0 | 1 | 2 }> = ({ duracion, indice }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const metodo = METODOS[indice];
-  const sacudida = useSacudida([IMPACTO]);
+  const sacudida = useSacudida([IMPACTO_METODO]);
   const numero = spring({ frame, fps, config: { damping: 9, mass: 0.7 } });
   const extra = spring({ frame: frame - 100, fps, config: { damping: 14 } });
 
@@ -53,7 +53,7 @@ export const Metodo: React.FC<{ duracion: number; indice: 0 | 1 | 2 }> = ({ dura
             >
               {metodo.numero}
             </div>
-            <Chispas en={IMPACTO} x={65} y={65} semilla={`num${indice}`} fuerza={30} />
+            <Chispas en={IMPACTO_METODO} x={65} y={65} semilla={`num${indice}`} fuerza={30} />
           </div>
           <TextoCinetico texto={metodo.titulo} resaltar={metodo.resaltar} tamano={indice === 2 ? 84 : 100} inicio={6} escalonado={4} interlineado={1.05} />
           {animacion}

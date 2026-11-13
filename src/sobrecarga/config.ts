@@ -93,8 +93,16 @@ export const TEXTO_MIN = 60;
 // PLACEHOLDER: pon la ruta relativa a /public, p. ej. "logo.png" o "musica.mp3".
 export const RECURSOS = {
   logo: null as string | null,
-  musica: null as string | null,
-  volumenMusica: 0.12,
+  /** Música original generada con scripts/generar_audio.py (120 BPM, drop en el segundo 3). */
+  musica: "audio/musica.mp3" as string | null,
+  volumenMusica: 0.55,
+  /** Efectos sincronizados con los impactos visuales. null = sin efectos. */
+  efectos: {
+    whoosh: "audio/whoosh.mp3",
+    golpe: "audio/golpe.mp3",
+    pop: "audio/pop.mp3",
+  } as { whoosh: string; golpe: string; pop: string } | null,
+  volumenEfectos: { whoosh: 0.35, golpe: 0.4, pop: 0.22 },
 };
 
 // ── Textos ───────────────────────────────────────────────────

@@ -3,7 +3,7 @@ import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { COLORES, TEXTO_MIN } from "../config";
 import { Chispas, useSacudida } from "../componentes/efectos";
 
-const APARECE_SERIE = 30;
+export const APARECE_SERIE = 30;
 const INICIO_BAJADA = 62;
 const ANCHO_PISTA = 680;
 

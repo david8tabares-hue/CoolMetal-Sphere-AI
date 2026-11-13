@@ -1,14 +1,14 @@
 import React from "react";
-import { AbsoluteFill, Audio, Freeze, interpolate, Sequence, staticFile, useCurrentFrame } from "remotion";
+import { AbsoluteFill, Freeze, interpolate, Sequence, useCurrentFrame } from "remotion";
 import {
   DURACION_TOTAL_FRAMES,
   ESCENAS,
   FRAMES_BARRIDO,
   FRAMES_PUENTE_BUCLE,
   GANCHO_ACTIVO,
-  RECURSOS,
 } from "./config";
 import { Fondo } from "./componentes/Fondo";
+import { Sonido } from "./componentes/Sonido";
 import { InsigniaSerie } from "./componentes/InsigniaSerie";
 import { Barrido } from "./componentes/efectos";
 import { Gancho } from "./escenas/Gancho";
@@ -43,7 +43,7 @@ const CORTES = [ESCENAS.queEs, ESCENAS.metodo1, ESCENAS.metodo2, ESCENAS.metodo3
 export const SobrecargaProgresiva: React.FC<SobrecargaProps> = ({ indiceGancho = GANCHO_ACTIVO }) => (
   <AbsoluteFill>
     <Fondo />
-    {RECURSOS.musica ? <Audio src={staticFile(RECURSOS.musica)} volume={RECURSOS.volumenMusica} /> : null}
+    <Sonido />
 
     <Sequence name="1 · Gancho" from={ESCENAS.gancho.desde} durationInFrames={ESCENAS.gancho.duracion}>
       <Gancho duracion={ESCENAS.gancho.duracion} indice={indiceGancho} />

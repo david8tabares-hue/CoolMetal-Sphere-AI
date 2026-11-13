@@ -7,7 +7,7 @@ import { ZonaSegura } from "../componentes/ZonaSegura";
 import { Chispas, Destello, useSacudida } from "../componentes/efectos";
 
 const ESCALONADO = 3;
-const CTA = 62;
+export const CTA = 62;
 
 /** Escena 5 (32-38 s): mensaje principal + CTA. Se desvanece y da paso al gancho (bucle). */
 export const Cierre: React.FC<{ duracion: number }> = ({ duracion }) => {

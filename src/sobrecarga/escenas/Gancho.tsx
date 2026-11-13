@@ -6,7 +6,7 @@ import { TextoCinetico } from "../componentes/TextoCinetico";
 import { ZonaSegura } from "../componentes/ZonaSegura";
 import { Chispas, Destello, NumeroGigante, useGolpe, useSacudida } from "../componentes/efectos";
 
-const IMPACTOS = [6, 48];
+export const IMPACTOS_GANCHO = [6, 48];
 
 /**
  * Escena 1 (0-3 s): gancho. Texto completo desde el frame 0 para frenar el scroll;
@@ -16,10 +16,10 @@ export const Gancho: React.FC<{ duracion: number; indice: number }> = ({ duracio
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const gancho = GANCHOS[indice] ?? GANCHOS[0];
-  const sacudida = useSacudida(IMPACTOS);
-  const golpe = useGolpe(IMPACTOS, 1.25);
+  const sacudida = useSacudida(IMPACTOS_GANCHO);
+  const golpe = useGolpe(IMPACTOS_GANCHO, 1.25);
   // Glitch RGB en la palabra clave justo después del impacto.
-  const t = frame - IMPACTOS[0];
+  const t = frame - IMPACTOS_GANCHO[0];
   const glitch = t >= 0 && t < 14 ? (1 - t / 14) * 16 * (t % 2 ? 1 : -1) : 0;
   const sombra = glitch ? `${glitch}px 0 0 ${COLORES.alerta}, ${-glitch}px 0 0 ${COLORES.cian}` : undefined;
   const flecha = spring({ frame: frame - 26, fps, config: { damping: 9 } });
@@ -57,9 +57,9 @@ export const Gancho: React.FC<{ duracion: number; indice: number }> = ({ duracio
             👇
           </div>
         </ZonaSegura>
-        <Chispas en={IMPACTOS[0]} x={520} y={900} semilla="gancho" fuerza={36} />
+        <Chispas en={IMPACTOS_GANCHO[0]} x={520} y={900} semilla="gancho" fuerza={36} />
       </AbsoluteFill>
-      <Destello impactos={[IMPACTOS[0]]} />
+      <Destello impactos={[IMPACTOS_GANCHO[0]]} />
     </Escena>
   );
 };
