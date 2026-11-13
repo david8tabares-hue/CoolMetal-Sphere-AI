@@ -5,6 +5,8 @@ import { SobrecargaProgresiva } from "./sobrecarga/SobrecargaProgresiva";
 import { ALTO, ANCHO, DURACION_TOTAL_FRAMES, FPS, GANCHO_ACTIVO, GANCHOS } from "./sobrecarga/config";
 import { MusculosSentadilla } from "./musculos/MusculosSentadilla";
 import * as Musculos from "./musculos/config";
+import { RangoMovimientoPressBanca } from "./press/RangoMovimientoPressBanca";
+import * as Press from "./press/config";
 
 export const RemotionRoot: React.FC = () => (
   <>
@@ -57,6 +59,27 @@ export const RemotionRoot: React.FC = () => (
           fps={Musculos.FPS}
           width={Musculos.ANCHO}
           height={Musculos.ALTO}
+          defaultProps={{ indiceGancho: i }}
+        />
+      ))}
+      <Composition
+        id="RangoMovimientoPressBanca"
+        component={RangoMovimientoPressBanca}
+        durationInFrames={Press.DURACION_TOTAL_FRAMES}
+        fps={Press.FPS}
+        width={Press.ANCHO}
+        height={Press.ALTO}
+        defaultProps={{ indiceGancho: Press.GANCHO_ACTIVO }}
+      />
+      {Press.GANCHOS.map((_, i) => (
+        <Composition
+          key={i}
+          id={`RangoMovimientoPressBanca-Gancho${i + 1}`}
+          component={RangoMovimientoPressBanca}
+          durationInFrames={Press.DURACION_TOTAL_FRAMES}
+          fps={Press.FPS}
+          width={Press.ANCHO}
+          height={Press.ALTO}
           defaultProps={{ indiceGancho: i }}
         />
       ))}

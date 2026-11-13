@@ -5,6 +5,7 @@ Música original sintetizada (sin licencias de terceros).
 
   python3 scripts/generar_audio.py                    # SobrecargaProgresiva (+ efectos)
   python3 scripts/generar_audio.py --perfil musculos  # MusculosSentadilla
+  python3 scripts/generar_audio.py --perfil press     # RangoMovimientoPressBanca
 
 Salida en public/audio/: musica.mp3 / musica-musculos.mp3 y (perfil sobrecarga)
 whoosh.mp3, golpe.mp3, pop.mp3
@@ -29,6 +30,8 @@ PERFILES = {
                        salida="musica", efectos=True),
     "musculos": dict(duracion=34.0, drop=3.0, a=(3, 6), lleno=(6, 29), ligero=None, final=(29, 34),
                      salida="musica-musculos", efectos=False),
+    "press": dict(duracion=34.0, drop=3.0, a=(3, 10), lleno=(10, 22), ligero=(22, 29), final=(29, 34),
+                  salida="musica-press", efectos=False),
 }
 _args = argparse.ArgumentParser()
 _args.add_argument("--perfil", choices=PERFILES, default="sobrecarga")

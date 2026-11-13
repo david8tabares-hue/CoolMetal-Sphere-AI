@@ -6,11 +6,13 @@
     "studio": "remotion studio",
     "render": "remotion render CoolMetalPromo out/promo.mp4",
     "render:sobrecarga": "remotion render SobrecargaProgresiva out/SobrecargaProgresiva.mp4",
-    "render:musculos": "remotion render MusculosSentadilla out/MusculosSentadilla.mp4"
+    "render:musculos": "remotion render MusculosSentadilla out/MusculosSentadilla.mp4",
+    "render:press": "remotion render RangoMovimientoPressBanca out/RangoMovimientoPressBanca.mp4"
   },
   "dependencies": {
     "@remotion/cli": "4.0.543",
     "@remotion/google-fonts": "4.0.543",
+    "@remotion/paths": "4.0.543",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "remotion": "4.0.543"
