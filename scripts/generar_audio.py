@@ -25,19 +25,21 @@ BPM = 120
 BEAT = 60 / BPM          # 0,5 s → 15 frames a 30 fps: los cortes caen en el beat
 BAR = 4 * BEAT
 # Secciones en segundos de video: a = ritmo base, lleno = todo, ligero = sin bajo, final = cierre.
+# estilo: "house" (por defecto, 4x4 con bombeo) o "trap" (medio tiempo, 808, hi-hats en ráfaga, campanas).
 PERFILES = {
     "sobrecarga": dict(duracion=38.0, drop=3.0, a=(3, 8), lleno=(8, 26), ligero=(26, 32), final=(32, 38),
                        salida="musica", efectos=True),
     "musculos": dict(duracion=34.0, drop=3.0, a=(3, 6), lleno=(6, 29), ligero=None, final=(29, 34),
                      salida="musica-musculos", efectos=False),
     "press": dict(duracion=34.0, drop=3.0, a=(3, 10), lleno=(10, 22), ligero=(22, 29), final=(29, 34),
-                  salida="musica-press", efectos=False),
+                  salida="musica-press", efectos=False, estilo="trap"),
 }
 _args = argparse.ArgumentParser()
 _args.add_argument("--perfil", choices=PERFILES, default="sobrecarga")
 PERFIL = PERFILES[_args.parse_args().perfil]
 DURACION = PERFIL["duracion"]  # duración total del video (s)
 DROP = PERFIL["drop"]          # fin del gancho: aquí entra el ritmo
+ESTILO = PERFIL.get("estilo", "house")
 PREVIA = 2 * BAR - DROP  # la subida empieza 1 s antes del final y continúa en el gancho (bucle)
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -136,6 +138,27 @@ def pad(notas, largo):
     return x * env / (len(notas) * 5)
 
 
+def bajo808(f, largo):
+    """Bajo 808: seno con caída de tono inicial, cola larga y saturación suave."""
+    n = int(largo * SR)
+    t = np.arange(n) / SR
+    fr = f * (1 + 1.5 * np.exp(-t / 0.03))
+    x = np.sin(2 * np.pi * np.cumsum(fr) / SR)
+    env = np.minimum(1, t / 0.003) * np.exp(-t / 0.5) * np.clip((largo - t) / 0.03, 0, 1)
+    return np.tanh(2.2 * x * env) * 0.8
+
+
+def campana(f):
+    n = int(0.9 * SR)
+    t = np.arange(n) / SR
+    x = (
+        np.sin(2 * np.pi * f * t)
+        + 0.45 * np.sin(2 * np.pi * 2 * f * t) * np.exp(-t / 0.15)
+        + 0.2 * np.sin(2 * np.pi * 3.01 * f * t) * np.exp(-t / 0.08)
+    )
+    return x * np.exp(-t / 0.35) * np.minimum(1, t / 0.002)
+
+
 # ── Arreglo (tiempo musical u = t + PREVIA; u=4 s es el drop) ──
 ACORDES = [  # i - VI - III - VII en La menor
     ([57, 60, 64], 33),  # Am
@@ -163,43 +186,86 @@ def poner(pista, x, u, g=1.0):
 
 K, CL, CR = kick(), clap(), crash()
 kicks = []
-for k in range(int(DURACION / BEAT)):
-    u = k * BEAT
-    ritmo = any(dentro(u, s) for s in (S_A, S_FULL, S_EJ, S_FIN))
-    lleno = dentro(u, S_FULL) or dentro(u, S_FIN)
-    # Hueco de 2 beats antes del cierre para que la subida respire.
-    hueco = S_FIN[0] - 2 * BEAT <= u < S_FIN[0]
-    if ritmo and not hueco:
-        poner("kick", K, u, 0.95)
-        kicks.append(u)
-        if k % 4 in (1, 3):
-            poner("clap", CL, u, 0.55 if lleno else 0.4)
-        poner("hat", hat(), u + BEAT / 2, 0.16)
-        if lleno:
-            poner("open", hat(0.09), u + BEAT / 2, 0.11)
-            for s in (0.25, 0.75):
-                poner("hat", hat(0.02), u + s * BEAT, 0.06)
-        if not dentro(u, S_EJ):
-            raiz = ACORDES[int(u // BAR) % 4][1]
-            poner("bajo", bajo(hz(raiz)), u + BEAT / 2, 0.55)
+if ESTILO == "trap":
+    # Medio tiempo: 808 + kick en el 1, el "y" del 2 y el 3; caja en el 3; hi-hats con ráfagas.
+    ACORDES = [  # i - VI - iv - V en La menor (más oscuro)
+        ([57, 60, 64], 33),  # Am
+        ([57, 60, 65], 29),  # F
+        ([57, 62, 65], 26),  # Dm
+        ([56, 59, 64], 28),  # E
+    ]
+    PASO = BAR / 16
+    MELODIA = {0: 2, 3: 1, 6: 0, 10: 1, 12: 2, 14: 3}  # paso → índice del tono del acorde
+    for b in range(int(np.ceil(DURACION / BAR))):
+        notas, raiz = ACORDES[b % 4]
+        golpes = [0, 6, 10] + ([13] if b % 2 else [])
+        for paso in range(16):
+            u = b * BAR + paso * PASO
+            ritmo = any(dentro(u, s) for s in (S_A, S_FULL, S_EJ, S_FIN))
+            lleno = dentro(u, S_FULL) or dentro(u, S_FIN)
+            ligero = dentro(u, S_EJ)
+            hueco = S_FIN[0] - 2 * BEAT <= u < S_FIN[0]
+            if not ritmo or hueco:
+                continue
+            if paso in golpes:
+                poner("kick", K[: int(0.18 * SR)], u, 0.55 if ligero else 0.8)
+                kicks.append(u)
+                if not ligero:  # en la sección ligera, sin 808: tensión antes del cierre
+                    siguiente = next((g for g in golpes if g > paso), 16)
+                    f = hz(raiz if raiz >= 31 else raiz + 12)
+                    poner("bajo", bajo808(f, (siguiente - paso) * PASO), u, 0.95)
+            if paso == 8:
+                poner("clap", CL, u, 0.6 if lleno else 0.45)
+            if paso % 2 == 0:
+                poner("hat", hat(0.03), u, 0.3 if paso % 4 == 0 else 0.2)
+            if lleno and b % 2 == 1 and paso >= 12:  # ráfaga de hi-hats al final del compás
+                for r in range(1, 3):
+                    poner("hat", hat(0.015), u + r * PASO / 3, 0.15)
+            if lleno and paso == 14:
+                poner("open", hat(0.12), u, 0.2)
+            if (lleno or ligero) and paso in MELODIA:
+                tonos = notas + [notas[0] + 12]
+                poner("arp", campana(hz(tonos[MELODIA[paso]] + 12)), u, 0.55)
+else:
+    for k in range(int(DURACION / BEAT)):
+        u = k * BEAT
+        ritmo = any(dentro(u, s) for s in (S_A, S_FULL, S_EJ, S_FIN))
+        lleno = dentro(u, S_FULL) or dentro(u, S_FIN)
+        # Hueco de 2 beats antes del cierre para que la subida respire.
+        hueco = S_FIN[0] - 2 * BEAT <= u < S_FIN[0]
+        if ritmo and not hueco:
+            poner("kick", K, u, 0.95)
+            kicks.append(u)
+            if k % 4 in (1, 3):
+                poner("clap", CL, u, 0.55 if lleno else 0.4)
+            poner("hat", hat(), u + BEAT / 2, 0.16)
             if lleno:
-                poner("bajo", bajo(hz(raiz + 12), 0.12), u + 0.75 * BEAT, 0.25)
+                poner("open", hat(0.09), u + BEAT / 2, 0.11)
+                for s in (0.25, 0.75):
+                    poner("hat", hat(0.02), u + s * BEAT, 0.06)
+            if not dentro(u, S_EJ):
+                raiz = ACORDES[int(u // BAR) % 4][1]
+                poner("bajo", bajo(hz(raiz)), u + BEAT / 2, 0.55)
+                if lleno:
+                    poner("bajo", bajo(hz(raiz + 12), 0.12), u + 0.75 * BEAT, 0.25)
+
+
+    # Arpegio en semicorcheas (con eco de corchea con puntillo).
+    PATRON = [0, 1, 2, 3, 2, 1, 2, 3]
+    for k in range(int(DURACION / (BEAT / 4))):
+        u = k * BEAT / 4
+        if dentro(u, S_FULL) or dentro(u, S_EJ) or dentro(u, S_FIN):
+            notas, _ = ACORDES[int(u // BAR) % 4]
+            tonos = notas + [notas[0] + 12]
+            m = tonos[PATRON[k % 8]] + 12
+            g = 0.75 if k % 4 == 0 else 0.5
+            poner("arp", pluck(hz(m)), u, g)
+
 
 # Pad: un acorde por compás, toda la canción.
 for b in range(int(np.ceil(DURACION / BAR))):
     notas, _ = ACORDES[b % 4]
     poner("pad", pad(notas, BAR), b * BAR, 1.0)
-
-# Arpegio en semicorcheas (con eco de corchea con puntillo).
-PATRON = [0, 1, 2, 3, 2, 1, 2, 3]
-for k in range(int(DURACION / (BEAT / 4))):
-    u = k * BEAT / 4
-    if dentro(u, S_FULL) or dentro(u, S_EJ) or dentro(u, S_FIN):
-        notas, _ = ACORDES[int(u // BAR) % 4]
-        tonos = notas + [notas[0] + 12]
-        m = tonos[PATRON[k % 8]] + 12
-        g = 0.75 if k % 4 == 0 else 0.5
-        poner("arp", pluck(hz(m)), u, g)
 
 # Subidas (ruido + tono ascendente) y redobles antes de cada drop.
 def subida(u0, u1, g=1.0):
@@ -229,16 +295,18 @@ for u in (S_A[0], S_FULL[0], S_FIN[0]):
 n_tot = N + COLA
 u_eje = np.arange(n_tot) / SR
 # Filtro del pad: se abre durante la subida, algo más cerrado en el ejemplo.
-corte = np.where(u_eje < S_A[0], 300 + 2600 * (u_eje / S_A[0]) ** 2, 3000)
+CORTE_PAD = 3000 if ESTILO == "house" else 1600
+corte = np.where(u_eje < S_A[0], 300 + (CORTE_PAD - 400) * (u_eje / S_A[0]) ** 2, CORTE_PAD)
 corte = np.where((u_eje >= S_EJ[0]) & (u_eje < S_EJ[1]), 1800, corte)
 pistas["pad"] = lp_variable(pistas["pad"], corte)
 # Sidechain: el kick "bombea" pad, bajo y arpegio.
 sc = np.ones(n_tot)
+PROF_SC = 0.65 if ESTILO == "house" else 0.3
 for u in kicks:
     i = int(u * SR)
     n = min(int(BEAT * SR), n_tot - i)
-    sc[i : i + n] = np.minimum(sc[i : i + n], 1 - 0.65 * np.exp(-np.arange(n) / (0.09 * SR)))
-for p in ("pad", "bajo", "arp"):
+    sc[i : i + n] = np.minimum(sc[i : i + n], 1 - PROF_SC * np.exp(-np.arange(n) / (0.09 * SR)))
+for p in (("pad", "bajo", "arp") if ESTILO == "house" else ("pad",)):
     pistas[p] *= sc
 
 niveles = {"kick": 0.9, "clap": 0.5, "hat": 0.6, "open": 0.6, "bajo": 0.8, "pad": 0.55, "arp": 0.32, "fx": 0.45}
