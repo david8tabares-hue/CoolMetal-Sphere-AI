@@ -1,0 +1,14 @@
+{
+  "name": "coolmetal-sphere-ai",
+  "private": true,
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "remotion render CoolMetalPromo out/promo.mp4"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.543",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "remotion": "4.0.543"
+  }
+}
