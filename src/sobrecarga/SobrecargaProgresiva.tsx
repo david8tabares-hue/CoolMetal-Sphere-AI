@@ -1,5 +1,5 @@
 import React from "react";
-import { AbsoluteFill, Freeze, interpolate, Sequence, useCurrentFrame } from "remotion";
+import { AbsoluteFill, Sequence } from "remotion";
 import {
   DURACION_TOTAL_FRAMES,
   ESCENAS,
@@ -7,10 +7,11 @@ import {
   FRAMES_PUENTE_BUCLE,
   GANCHO_ACTIVO,
 } from "./config";
-import { Fondo } from "./componentes/Fondo";
+import { Fondo } from "../serie/componentes/Fondo";
 import { Sonido } from "./componentes/Sonido";
-import { InsigniaSerie } from "./componentes/InsigniaSerie";
-import { Barrido } from "./componentes/efectos";
+import { PuenteBucle } from "../serie/componentes/PuenteBucle";
+import { InsigniaSerie } from "../serie/componentes/InsigniaSerie";
+import { Barrido } from "../serie/componentes/efectos";
 import { Gancho } from "./escenas/Gancho";
 import { QueEs } from "./escenas/QueEs";
 import { Metodo } from "./escenas/Metodo";
@@ -19,21 +20,6 @@ import { Cierre } from "./escenas/Cierre";
 
 export type SobrecargaProps = { indiceGancho: number };
 
-/** Últimos frames: aparece el frame 0 exacto del gancho → el bucle no salta. */
-const PuenteBucle: React.FC<{ indiceGancho: number }> = ({ indiceGancho }) => {
-  const frame = useCurrentFrame();
-  const opacidad = interpolate(frame, [0, FRAMES_PUENTE_BUCLE - 1], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
-  return (
-    <AbsoluteFill style={{ opacity: opacidad }}>
-      <Freeze frame={0}>
-        <Gancho duracion={ESCENAS.gancho.duracion} indice={indiceGancho} />
-      </Freeze>
-    </AbsoluteFill>
-  );
-};
 
 // Cortes entre escenas donde va un barrido (no en el bucle).
 const CORTES = [ESCENAS.queEs, ESCENAS.metodo1, ESCENAS.metodo2, ESCENAS.metodo3, ESCENAS.ejemplo, ESCENAS.cierre].map(
@@ -67,7 +53,9 @@ export const SobrecargaProgresiva: React.FC<SobrecargaProps> = ({ indiceGancho =
       <Cierre duracion={ESCENAS.cierre.duracion} />
     </Sequence>
     <Sequence name="Puente de bucle" from={DURACION_TOTAL_FRAMES - FRAMES_PUENTE_BUCLE} durationInFrames={FRAMES_PUENTE_BUCLE}>
-      <PuenteBucle indiceGancho={indiceGancho} />
+      <PuenteBucle duracion={FRAMES_PUENTE_BUCLE}>
+        <Gancho duracion={ESCENAS.gancho.duracion} indice={indiceGancho} />
+      </PuenteBucle>
     </Sequence>
 
     {/* Insignia fija: idéntica en el primer y el último frame. */}

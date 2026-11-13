@@ -1,6 +1,6 @@
 import React from "react";
 import { AbsoluteFill } from "remotion";
-import { FUENTE, COLORES, PESO_TEXTO, ZONA_SEGURA } from "../config";
+import { FUENTE, COLORES, PESO_TEXTO, ZONA_SEGURA } from "../tema";
 
 /** Contenedor que coloca el contenido dentro de la zona segura vertical. */
 export const ZonaSegura: React.FC<{

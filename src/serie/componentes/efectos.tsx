@@ -1,6 +1,6 @@
 import React from "react";
 import { AbsoluteFill, Easing, interpolate, random, useCurrentFrame } from "remotion";
-import { COLORES, EFECTOS, FUENTE } from "../config";
+import { COLORES, EFECTOS, FUENTE } from "../tema";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 

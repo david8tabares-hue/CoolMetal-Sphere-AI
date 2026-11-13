@@ -1,8 +1,8 @@
 import React from "react";
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { COLORES } from "../config";
-import { Chispas, useGolpe, useSacudida } from "../componentes/efectos";
-import { formatear } from "../componentes/formato";
+import { Chispas, useGolpe, useSacudida } from "../../serie/componentes/efectos";
+import { formatear } from "../../serie/componentes/formato";
 
 // Frames (relativos a la escena) en que cae cada disco. El primero es el peso inicial.
 const DISCOS = [

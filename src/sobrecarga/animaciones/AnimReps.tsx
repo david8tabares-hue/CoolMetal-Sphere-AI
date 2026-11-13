@@ -1,7 +1,7 @@
 import React from "react";
 import { interpolate, useCurrentFrame } from "remotion";
 import { COLORES, TEXTO_MIN } from "../config";
-import { Chispas, useGolpe } from "../componentes/efectos";
+import { Chispas, useGolpe } from "../../serie/componentes/efectos";
 
 export const PRIMER_CAMBIO = 40;
 export const CADA = 20;

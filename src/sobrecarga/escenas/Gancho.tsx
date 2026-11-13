@@ -1,10 +1,10 @@
 import React from "react";
 import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { COLORES, GANCHOS } from "../config";
-import { Escena } from "../componentes/Escena";
-import { TextoCinetico } from "../componentes/TextoCinetico";
-import { ZonaSegura } from "../componentes/ZonaSegura";
-import { Chispas, Destello, NumeroGigante, useGolpe, useSacudida } from "../componentes/efectos";
+import { Escena } from "../../serie/componentes/Escena";
+import { TextoCinetico } from "../../serie/componentes/TextoCinetico";
+import { ZonaSegura } from "../../serie/componentes/ZonaSegura";
+import { Chispas, Destello, NumeroGigante, useGolpe, useSacudida } from "../../serie/componentes/efectos";
 
 export const IMPACTOS_GANCHO = [6, 48];
 

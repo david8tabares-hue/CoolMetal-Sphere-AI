@@ -1,6 +1,6 @@
 import React from "react";
-import { AbsoluteFill, useCurrentFrame } from "remotion";
-import { COLORES, DURACION_TOTAL_FRAMES } from "../config";
+import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
+import { COLORES } from "../tema";
 
 /**
  * Fondo animado con manchas de color en órbita.
@@ -8,6 +8,8 @@ import { COLORES, DURACION_TOTAL_FRAMES } from "../config";
  */
 export const Fondo: React.FC = () => {
   const frame = useCurrentFrame();
+  // Periodo = duración de la composición → el bucle no salta.
+  const { durationInFrames: DURACION_TOTAL_FRAMES } = useVideoConfig();
   const th = (frame / DURACION_TOTAL_FRAMES) * Math.PI * 2;
   const mancha = (x: number, y: number, r: number, color: string, opacidad: number) => (
     <div

@@ -1,5 +1,5 @@
 import React from "react";
-import { Audio, Sequence, staticFile } from "remotion";
+import { PistaSonido, type TipoEfecto } from "../../serie/componentes/PistaSonido";
 import { ESCENAS, FRAMES_BARRIDO, METODOS, RECURSOS } from "../config";
 import { IMPACTOS_GANCHO } from "../escenas/Gancho";
 import { FRAME_LLENO, PASOS_BARRA } from "../escenas/QueEs";
@@ -10,7 +10,7 @@ import { APARECE_SERIE } from "../animaciones/AnimTecnica";
 import { INICIO_LINEA, SELLO } from "../escenas/Ejemplo";
 import { CTA } from "../escenas/Cierre";
 
-type Tipo = "whoosh" | "golpe" | "pop";
+type Tipo = TipoEfecto;
 
 /** Lista de efectos de sonido: [tipo, frame absoluto]. Se deriva de los mismos frames que la animación. */
 const efectos = (): [Tipo, number][] => {
@@ -33,15 +33,4 @@ const efectos = (): [Tipo, number][] => {
 };
 
 /** Música de fondo + efectos sincronizados con los impactos. */
-export const Sonido: React.FC = () => (
-  <>
-    {RECURSOS.musica ? <Audio src={staticFile(RECURSOS.musica)} volume={RECURSOS.volumenMusica} /> : null}
-    {RECURSOS.efectos
-      ? efectos().map(([tipo, frame], i) => (
-          <Sequence key={i} name={`sfx ${tipo}`} from={frame} durationInFrames={30} layout="none">
-            <Audio src={staticFile(RECURSOS.efectos![tipo])} volume={RECURSOS.volumenEfectos[tipo]} />
-          </Sequence>
-        ))
-      : null}
-  </>
-);
+export const Sonido: React.FC = () => <PistaSonido recursos={RECURSOS} efectos={efectos()} />;

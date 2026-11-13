@@ -1,11 +1,11 @@
 import React from "react";
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { COLORES, EJEMPLO, TEXTO_MIN } from "../config";
-import { Escena } from "../componentes/Escena";
-import { TextoCinetico } from "../componentes/TextoCinetico";
-import { ZonaSegura } from "../componentes/ZonaSegura";
-import { Chispas, useSacudida } from "../componentes/efectos";
-import { formatear } from "../componentes/formato";
+import { Escena } from "../../serie/componentes/Escena";
+import { TextoCinetico } from "../../serie/componentes/TextoCinetico";
+import { ZonaSegura } from "../../serie/componentes/ZonaSegura";
+import { Chispas, useSacudida } from "../../serie/componentes/efectos";
+import { formatear } from "../../serie/componentes/formato";
 
 const ALTO_MAX = 360;
 const ANCHO_BARRA = 150;

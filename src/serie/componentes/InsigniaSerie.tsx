@@ -1,6 +1,6 @@
 import React from "react";
 import { AbsoluteFill, Img, staticFile } from "remotion";
-import { COLORES, FUENTE, PESO_TEXTO, RECURSOS, SERIE, TEXTO_MIN, ZONA_SEGURA } from "../config";
+import { COLORES, FUENTE, LOGO, PESO_TEXTO, SERIE, TEXTO_MIN, ZONA_SEGURA } from "../tema";
 
 /** Insignia fija con el nombre de la serie (y el logo, si existe). */
 export const InsigniaSerie: React.FC = () => (
@@ -21,8 +21,8 @@ export const InsigniaSerie: React.FC = () => (
         marginRight: ZONA_SEGURA.derecha - ZONA_SEGURA.izquierda,
       }}
     >
-      {RECURSOS.logo ? (
-        <Img src={staticFile(RECURSOS.logo)} style={{ height: 70, width: 70, objectFit: "contain" }} />
+      {LOGO ? (
+        <Img src={staticFile(LOGO)} style={{ height: 70, width: 70, objectFit: "contain" }} />
       ) : null}
       {SERIE}
     </div>

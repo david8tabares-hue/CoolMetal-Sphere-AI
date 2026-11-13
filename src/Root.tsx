@@ -3,6 +3,8 @@ import { Composition, Folder } from "remotion";
 import { CoolMetalPromo } from "./CoolMetalPromo";
 import { SobrecargaProgresiva } from "./sobrecarga/SobrecargaProgresiva";
 import { ALTO, ANCHO, DURACION_TOTAL_FRAMES, FPS, GANCHO_ACTIVO, GANCHOS } from "./sobrecarga/config";
+import { MusculosSentadilla } from "./musculos/MusculosSentadilla";
+import * as Musculos from "./musculos/config";
 
 export const RemotionRoot: React.FC = () => (
   <>
@@ -34,6 +36,27 @@ export const RemotionRoot: React.FC = () => (
           fps={FPS}
           width={ANCHO}
           height={ALTO}
+          defaultProps={{ indiceGancho: i }}
+        />
+      ))}
+      <Composition
+        id="MusculosSentadilla"
+        component={MusculosSentadilla}
+        durationInFrames={Musculos.DURACION_TOTAL_FRAMES}
+        fps={Musculos.FPS}
+        width={Musculos.ANCHO}
+        height={Musculos.ALTO}
+        defaultProps={{ indiceGancho: Musculos.GANCHO_ACTIVO }}
+      />
+      {Musculos.GANCHOS.map((_, i) => (
+        <Composition
+          key={i}
+          id={`MusculosSentadilla-Gancho${i + 1}`}
+          component={MusculosSentadilla}
+          durationInFrames={Musculos.DURACION_TOTAL_FRAMES}
+          fps={Musculos.FPS}
+          width={Musculos.ANCHO}
+          height={Musculos.ALTO}
           defaultProps={{ indiceGancho: i }}
         />
       ))}

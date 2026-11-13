@@ -1,7 +1,7 @@
 import React from "react";
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { COLORES, TEXTO_MIN } from "../config";
-import { Chispas, useSacudida } from "../componentes/efectos";
+import { Chispas, useSacudida } from "../../serie/componentes/efectos";
 
 export const APARECE_SERIE = 30;
 const INICIO_BAJADA = 62;

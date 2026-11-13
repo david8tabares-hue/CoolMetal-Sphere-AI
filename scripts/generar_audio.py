@@ -3,12 +3,15 @@
 Genera la música y los efectos de sonido del video "Sobrecarga progresiva".
 Música original sintetizada (sin licencias de terceros).
 
-  python3 scripts/generar_audio.py
+  python3 scripts/generar_audio.py                    # SobrecargaProgresiva (+ efectos)
+  python3 scripts/generar_audio.py --perfil musculos  # MusculosSentadilla
 
-Salida en public/audio/: musica.mp3, whoosh.mp3, golpe.mp3, pop.mp3
-Requiere numpy y scipy. Si cambias la duración del video o el momento del
-"drop" (fin del gancho), ajusta DURACION y DROP abajo y vuelve a ejecutarlo.
+Salida en public/audio/: musica.mp3 / musica-musculos.mp3 y (perfil sobrecarga)
+whoosh.mp3, golpe.mp3, pop.mp3
+Requiere numpy y scipy. Si cambias la duración de un video o sus escenas,
+ajusta su entrada en PERFILES y vuelve a ejecutarlo.
 """
+import argparse
 import os
 import subprocess
 import wave
@@ -20,8 +23,18 @@ SR = 44100
 BPM = 120
 BEAT = 60 / BPM          # 0,5 s → 15 frames a 30 fps: los cortes caen en el beat
 BAR = 4 * BEAT
-DURACION = 38.0          # duración total del video (s)
-DROP = 3.0               # fin del gancho: aquí entra el ritmo
+# Secciones en segundos de video: a = ritmo base, lleno = todo, ligero = sin bajo, final = cierre.
+PERFILES = {
+    "sobrecarga": dict(duracion=38.0, drop=3.0, a=(3, 8), lleno=(8, 26), ligero=(26, 32), final=(32, 38),
+                       salida="musica", efectos=True),
+    "musculos": dict(duracion=34.0, drop=3.0, a=(3, 6), lleno=(6, 29), ligero=None, final=(29, 34),
+                     salida="musica-musculos", efectos=False),
+}
+_args = argparse.ArgumentParser()
+_args.add_argument("--perfil", choices=PERFILES, default="sobrecarga")
+PERFIL = PERFILES[_args.parse_args().perfil]
+DURACION = PERFIL["duracion"]  # duración total del video (s)
+DROP = PERFIL["drop"]          # fin del gancho: aquí entra el ritmo
 PREVIA = 2 * BAR - DROP  # la subida empieza 1 s antes del final y continúa en el gancho (bucle)
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -129,10 +142,10 @@ ACORDES = [  # i - VI - III - VII en La menor
 ]
 # Tiempos de video → tiempo musical (u = t + PREVIA)
 U = lambda t: t + PREVIA
-S_A = (U(DROP), U(8))        # Qué es
-S_FULL = (U(8), U(26))       # Las 3 formas
-S_EJ = (U(26), U(32))        # Ejemplo (más ligero)
-S_FIN = (U(32), DURACION)    # Cierre
+S_A = tuple(map(U, PERFIL["a"]))
+S_FULL = tuple(map(U, PERFIL["lleno"]))
+S_EJ = tuple(map(U, PERFIL["ligero"])) if PERFIL["ligero"] else (0, 0)
+S_FIN = (U(PERFIL["final"][0]), DURACION)
 dentro = lambda u, s: s[0] <= u < s[1] - 1e-9
 
 N = int(DURACION * SR)
@@ -293,7 +306,8 @@ def guardar(nombre, x):
 
 
 os.makedirs(SALIDA, exist_ok=True)
-guardar("musica", mix)
-guardar("whoosh", whoosh())
-guardar("golpe", golpe())
-guardar("pop", pop())
+guardar(PERFIL["salida"], mix)
+if PERFIL["efectos"]:
+    guardar("whoosh", whoosh())
+    guardar("golpe", golpe())
+    guardar("pop", pop())

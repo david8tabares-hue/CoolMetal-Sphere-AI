@@ -1,6 +1,6 @@
 import React from "react";
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
-import { COLORES } from "../config";
+import { COLORES } from "../tema";
 
 type Palabra = { texto: string; resaltada: boolean; palabras: number; indice: number };
 

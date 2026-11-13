@@ -5,7 +5,8 @@
     "dev": "remotion studio",
     "studio": "remotion studio",
     "render": "remotion render CoolMetalPromo out/promo.mp4",
-    "render:sobrecarga": "remotion render SobrecargaProgresiva out/SobrecargaProgresiva.mp4"
+    "render:sobrecarga": "remotion render SobrecargaProgresiva out/SobrecargaProgresiva.mp4",
+    "render:musculos": "remotion render MusculosSentadilla out/MusculosSentadilla.mp4"
   },
   "dependencies": {
     "@remotion/cli": "4.0.543",

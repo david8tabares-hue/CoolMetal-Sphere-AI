@@ -1,6 +1,6 @@
 import React from "react";
 import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
-import { FRAMES_FUNDIDO } from "../config";
+import { FRAMES_FUNDIDO } from "../tema";
 
 /** Envoltorio de escena: zoom de entrada (spring) y fundido de salida (interpolate). */
 export const Escena: React.FC<{

@@ -1,10 +1,10 @@
 import React from "react";
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { COLORES, METODOS, TEXTO_MIN } from "../config";
-import { Escena } from "../componentes/Escena";
-import { TextoCinetico } from "../componentes/TextoCinetico";
-import { ZonaSegura } from "../componentes/ZonaSegura";
-import { Chispas, NumeroGigante, useSacudida } from "../componentes/efectos";
+import { Escena } from "../../serie/componentes/Escena";
+import { TextoCinetico } from "../../serie/componentes/TextoCinetico";
+import { ZonaSegura } from "../../serie/componentes/ZonaSegura";
+import { Chispas, NumeroGigante, useSacudida } from "../../serie/componentes/efectos";
 import { AnimPeso } from "../animaciones/AnimPeso";
 import { AnimReps } from "../animaciones/AnimReps";
 import { AnimTecnica } from "../animaciones/AnimTecnica";
